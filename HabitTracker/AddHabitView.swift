@@ -31,12 +31,11 @@ struct AddHabitView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(habitName.isEmpty ? Color.gray.opacity(0.5) :Color.accentColor)
+                .background(habitName.isEmpty ? Color.gray.opacity(0.5) :Color.green)
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 .padding(.horizontal)
                 .animation(.easeInOut(duration: 0.3), value: habitName)
-                .disabled(habitName.isEmpty)
                 
                 Spacer()
             }
@@ -58,6 +57,11 @@ struct AddHabitView: View {
             modelContext.insert(newHabit)
             print("\(newHabit.title) added")
             
+            do {
+               try modelContext.save()
+            } catch {
+                print("Unable to save new habit")
+            }
         }
     }
         }

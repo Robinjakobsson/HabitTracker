@@ -15,34 +15,56 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack {
+            VStack {
+                ProgressView(value: completedHabitsToday)
+                    .progressViewStyle(.linear)
+                    .animation(.easeInOut, value: completedHabitsToday)
+                    .tint(.green)
+                
+                List {
                     ForEach(habits) { habit in
-                        Text("\(habit.title)")
+                        HabitCardView(habit: habit)
+                    }
+                    .onDelete(perform: deleteItems)
+                }
+                .listStyle(.plain)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                
+                .navigationTitle("Habits")
+                .toolbar {
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action : { showingAddSheet = true }) {
+                            Image(systemName: "plus")
+                                .foregroundColor(.green)
+                            
+                        }
                     }
                 }
-            }
-            .navigationTitle("Habits")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action : { showingAddSheet = true }) {
-                        Image(systemName: "plus")
-                    }
+                .sheet(isPresented: $showingAddSheet) {
+                    AddHabitView()
                 }
-            }
-            .sheet(isPresented: $showingAddSheet) {
-                AddHabitView()
             }
         }
         
     }
     
     
+    private var completedHabitsToday: Double {
+            let totalHabits = habits.count
+            let completedHabits = habits.filter { $0.isCompletedToday() }.count
+            return totalHabits > 0 ? Double(completedHabits) / Double(totalHabits) : 0
+        }
+    
 // MARK: - CRUD OPERATIONS
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-           
+            for index in offsets {
+                let habitToDelete = habits[index]
+                modelContext.delete(habitToDelete)
+                }
             }
         }
     }
