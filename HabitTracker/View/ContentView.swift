@@ -67,6 +67,21 @@ struct ContentView: View {
                 }
             }
         }
+    func dailyReset(for habit: Habit) {
+        // fetching Calendar class
+        let calendar = Calendar.current
+        
+        //Getting todays date without the time
+        let today = calendar.startOfDay(for: Date())
+        // getting the date of lastReset without the time aswell
+        let lastreset = calendar.startOfDay(for: habit.lastReset ?? Date())
+        
+        // if todays date is greater than lastresets date we reset the boolean and set the lastreset to today
+        if today > lastreset {
+            habit.isComplete = false
+            habit.lastReset = today
+            }
+        }
     }
 
 #Preview {

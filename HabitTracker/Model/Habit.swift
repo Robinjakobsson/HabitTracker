@@ -16,15 +16,17 @@ class Habit {
     var isComplete: Bool = false
     var completeDate: Date?
     var streak: Int = 0
+    var lastReset: Date?
 
   
-    init(title: String, createdDate: Date = Date(), streak: Int = 0, completeDate: Date? = nil, isComplete: Bool = false) {
+    init(title: String, createdDate: Date = Date(), streak: Int = 0, completeDate: Date? = nil, isComplete: Bool = false, lastReset : Date = Date()) {
         self.id = UUID()
         self.title = title
         self.createdDate = createdDate
         self.streak = streak
         self.completeDate = completeDate
         self.isComplete = isComplete
+        self.lastReset = lastReset
     }
     
     
@@ -60,5 +62,4 @@ class Habit {
         return calendar.isDateInToday(completeDate)
         
     }
-    
 }
