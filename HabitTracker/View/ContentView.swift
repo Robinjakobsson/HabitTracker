@@ -8,81 +8,130 @@
 import SwiftUI
 import SwiftData
 
+//Veckodagar längst upp och en lista för dagens grejer.
+
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Habit.createdDate, order: .forward) var habits: [Habit]
-    @State var showingAddSheet = false
-
+    
+    @State private var selectedDay: Weekday = currentDay()
+    @State private var showingAddSheet = false
+    @State private var selectedTab: Int = 0
     var body: some View {
         NavigationView {
-            VStack {
-                ProgressView(value: completedHabitsToday)
-                    .progressViewStyle(.linear)
-                    .animation(.easeInOut, value: completedHabitsToday)
-                    .tint(.green)
-                
-                List {
-                    ForEach(habits) { habit in
-                        HabitCardView(habit: habit)
+            ZStack {
+                VStack {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(Weekday.allCases) { day in
+                                Text(day.displayName)
+                                    .padding()
+                                    .background(selectedDay == day ? Color.green : Color.gray.opacity(0.2))
+                                    .animation(.easeInOut)
+                                    .cornerRadius(10)
+                                    .onTapGesture {
+                                        selectedDay = day
+                                    }
+                            }
+                        }.padding(.horizontal)
                     }
-                    .onDelete(perform: deleteItems)
-                }
-                .listStyle(.plain)
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                
-                .navigationTitle("Habits")
-                .toolbar {
                     
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action : { showingAddSheet = true }) {
-                            Image(systemName: "plus")
-                                .foregroundColor(.green)
+                    List {
+                        ForEach(habitsForSelectedDay) { habit in
+                            HabitCardView(habit: habit)
+                        }
+                        .onDelete(perform: removeHabit)
+                    }
+                    .listStyle(.plain)
+                    
+                    Spacer()
+                }
+                .navigationTitle("Habits")
+                
+                VStack {
+                    
+                    Spacer()
+                    HStack {
+                        Button(action: {
+                            withAnimation(.easeInOut) {
+                                selectedTab = 0
+                            }
+                        }) {
+                            Image(systemName: "house")
+                                .font(.system(size: 20))
+                                .padding()
+                                .background(
+                                    Circle()
+                                        .foregroundColor(selectedTab == 0 ? .green : Color.clear)
+                                        .animation(.easeInOut)
+                                        
+                                )
+                                .foregroundColor(selectedTab == 0 ? .white : .green)
+                            
                             
                         }
+                        Button(action: {
+                            withAnimation(.easeInOut) {
+                                selectedTab = 1
+                                    
+                            }
+                        }) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.system(size: 20))
+                                .padding()
+                                .background(
+                                    Circle()
+                                        .foregroundColor(selectedTab == 1 ? .green : Color.clear)
+                                        .animation(.easeInOut)
+                                )
+                                .foregroundColor(selectedTab == 1 ? .white : .green)
+                        }
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(.capsule)
+                    .padding(.horizontal)
+                    .shadow(radius: 10)
+                }
+                
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        showingAddSheet = true
+                    }) {
+                        Image(systemName: "plus")
                     }
                 }
-                .sheet(isPresented: $showingAddSheet) {
-                    AddHabitView()
-                }
+            }
+            .sheet(isPresented: $showingAddSheet) {
+                AddHabitView()
             }
         }
         
     }
-    
-    
-    private var completedHabitsToday: Double {
-            let totalHabits = habits.count
-            let completedHabits = habits.filter { $0.isCompletedToday() }.count
-            return totalHabits > 0 ? Double(completedHabits) / Double(totalHabits) : 0
+    func removeHabit(at offsets: IndexSet) {
+        for index in offsets {
+            let habitToDelete = habits[index]
+            modelContext.delete(habitToDelete)
         }
-    
-// MARK: - CRUD OPERATIONS
+        do {
+           try modelContext.save()
+        }catch {
+            print("Failed to remove")
+        }
+    }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                let habitToDelete = habits[index]
-                modelContext.delete(habitToDelete)
-                }
-            }
-        }
-    func dailyReset(for habit: Habit) {
-        // fetching Calendar class
-        let calendar = Calendar.current
-        
-        //Getting todays date without the time
-        let today = calendar.startOfDay(for: Date())
-        // getting the date of lastReset without the time aswell
-        let lastreset = calendar.startOfDay(for: habit.lastReset ?? Date())
-        
-        // if todays date is greater than lastresets date we reset the boolean and set the lastreset to today
-        if today > lastreset {
-            habit.isComplete = false
-            habit.lastReset = today
-            }
-        }
+    var habitsForSelectedDay: [Habit] {
+        habits.filter {  $0.days.contains(selectedDay) }
     }
+
+        static func currentDay() -> Weekday {
+        let weekdayIndex = Calendar.current.component(.weekday, from: Date())
+        return Weekday.allCases[(weekdayIndex + 5) % 7]
+    }
+}
 
 #Preview {
     ContentView()
