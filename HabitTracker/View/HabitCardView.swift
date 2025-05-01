@@ -10,7 +10,6 @@ import SwiftData
 
 struct HabitCardView: View {
     @Environment(\.modelContext) private var modelContext
-    
     let habit : Habit?
     
     
@@ -36,10 +35,13 @@ struct HabitCardView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            if let streak = habit?.streak {
-                Text("Streak : \(streak)")
-                    .font(.subheadline)
-                    .foregroundColor(habit?.streak ?? 0 < 0 ? .black : .green)
+            HStack {
+                if let streak = habit?.streak {
+                    Text("Streak : \(streak) 🔥")
+                        .font(.subheadline)
+                        .foregroundColor(habit?.streak ?? 0 < 0 ? .black : .green)
+                    
+                }
             }
             
         }
@@ -63,7 +65,7 @@ struct HabitCardView: View {
     }
     
     func toggleComplete () {
-        habit?.markAsComplete()
+        habit?.markAsComplete(habit: (habit)!)
         do {
             try modelContext.save()
         } catch {
@@ -73,6 +75,4 @@ struct HabitCardView: View {
     
 }
 
-#Preview {
-    HabitCardView(habit: Habit(title: "Walk"))
-}
+
