@@ -12,48 +12,61 @@ struct AddHabitView: View {
     @Environment(\.modelContext) private var modelContext
     
     @State var habitName : String = ""
-    
+    @State private var selectedDays: Set<Weekday> = []
     var body: some View {
-        NavigationView {
-            VStack {
-                Text("New habit")
-                    .font(.title)
-                    .bold()
-                
-                TextField("Name of Habit", text: $habitName)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
-                
-                Button(action: {addItem()}) {
-                    Text("Save")
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(habitName.isEmpty ? Color.gray.opacity(0.5) :Color.green)
-                .foregroundColor(.white)
-                .cornerRadius(10)
-                .padding(.horizontal)
-                .animation(.easeInOut(duration: 0.3), value: habitName)
-                
-                Spacer()
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
+        
+        
+        VStack {
             
-        }
-        
-        
+            Text("Repeat on:")
+                .font(.title)
+            
+            HStack {
+                ForEach(Weekday.allCases) { day in
+                    Button(day.displayName) {
+                        withAnimation {
+                            if selectedDays.contains(day) {
+                                selectedDays.remove(day)
+                                print("\(day) Removed")
+                            } else {
+                                selectedDays.insert(day)
+                                print("\(day) Selected")
+                                
+                            }
+                        }
+                    }
+                    .padding(8)
+                    .background(selectedDays.contains(day) ? Color.green : Color.gray.opacity(0.2))
+                    .foregroundColor(selectedDays.contains(day) ? Color.white : Color.blue)
+                    .cornerRadius(8)
+                }
             }
-    private func addItem() {
+            .padding()
+            
+            
+            TextField("Habit name", text: $habitName)
+                .textFieldStyle(.roundedBorder)
+                .padding()
+            
+            Button(action: {
+                withAnimation{
+                    addItem()
+                }
+            }) {
+                Text("Save")
+            }
+                .frame(maxWidth: .infinity, maxHeight: 50)
+                .background(!habitName.isEmpty ?  Color.green : Color(.systemGray6))
+                .cornerRadius(10)
+                .padding()
+                .foregroundColor(!habitName.isEmpty ? Color.white : Color.blue)
+                .animation(.smooth(duration: 0.3), value: habitName)
+            }
+        Spacer()
+    }
+     func addItem() {
         withAnimation {
-            let newHabit = Habit(title: habitName)
+            let newHabit = Habit(title: habitName, days: Array(selectedDays))
             modelContext.insert(newHabit)
             print("\(newHabit.title) added")
             
@@ -62,9 +75,12 @@ struct AddHabitView: View {
             } catch {
                 print("Unable to save new habit")
             }
+            habitName = ""
+            selectedDays.removeAll()
         }
     }
-        }
+}
+
 
 #Preview {
     AddHabitView()

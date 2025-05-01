@@ -8,81 +8,79 @@
 import SwiftUI
 import SwiftData
 
+//Veckodagar längst upp och en lista för dagens grejer.
+
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Habit.createdDate, order: .forward) var habits: [Habit]
-    @State var showingAddSheet = false
+    
+    @State private var selectedDay: Weekday = currentDay()
+    @State private var showingAddSheet = false
 
     var body: some View {
         NavigationView {
             VStack {
-                ProgressView(value: completedHabitsToday)
-                    .progressViewStyle(.linear)
-                    .animation(.easeInOut, value: completedHabitsToday)
-                    .tint(.green)
-                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack {
+                        ForEach(Weekday.allCases) { day in
+                            Text(day.displayName)
+                                .padding()
+                                .background(selectedDay == day ? Color.green : Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                                .onTapGesture {
+                                    selectedDay = day
+                                }
+                        }
+                    }.padding(.horizontal)
+                }
+
                 List {
-                    ForEach(habits) { habit in
+                    ForEach(habitsForSelectedDay) { habit in
                         HabitCardView(habit: habit)
                     }
-                    .onDelete(perform: deleteItems)
+                    .onDelete(perform: removeHabit)
                 }
                 .listStyle(.plain)
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                
-                .navigationTitle("Habits")
-                .toolbar {
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action : { showingAddSheet = true }) {
-                            Image(systemName: "plus")
-                                .foregroundColor(.green)
-                            
-                        }
+
+                Spacer()
+            }
+            .navigationTitle("Habits")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        showingAddSheet = true
+                    }) {
+                        Image(systemName: "plus")
                     }
                 }
-                .sheet(isPresented: $showingAddSheet) {
-                    AddHabitView()
-                }
+            }
+            .sheet(isPresented: $showingAddSheet) {
+                AddHabitView()
             }
         }
-        
     }
-    
-    
-    private var completedHabitsToday: Double {
-            let totalHabits = habits.count
-            let completedHabits = habits.filter { $0.isCompletedToday() }.count
-            return totalHabits > 0 ? Double(completedHabits) / Double(totalHabits) : 0
+    func removeHabit(at offsets: IndexSet) {
+        for index in offsets {
+            let habitToDelete = habits[index]
+            modelContext.delete(habitToDelete)
         }
-    
-// MARK: - CRUD OPERATIONS
+        do {
+           try modelContext.save()
+        }catch {
+            print("Failed to remove")
+        }
+    }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                let habitToDelete = habits[index]
-                modelContext.delete(habitToDelete)
-                }
-            }
-        }
-    func dailyReset(for habit: Habit) {
-        // fetching Calendar class
-        let calendar = Calendar.current
-        
-        //Getting todays date without the time
-        let today = calendar.startOfDay(for: Date())
-        // getting the date of lastReset without the time aswell
-        let lastreset = calendar.startOfDay(for: habit.lastReset ?? Date())
-        
-        // if todays date is greater than lastresets date we reset the boolean and set the lastreset to today
-        if today > lastreset {
-            habit.isComplete = false
-            habit.lastReset = today
-            }
-        }
+    var habitsForSelectedDay: [Habit] {
+        habits.filter {  $0.days.contains(selectedDay) }
     }
+
+        static func currentDay() -> Weekday {
+        let weekdayIndex = Calendar.current.component(.weekday, from: Date())
+        return Weekday.allCases[(weekdayIndex + 5) % 7]
+    }
+}
 
 #Preview {
     ContentView()
