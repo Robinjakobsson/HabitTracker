@@ -39,9 +39,10 @@ struct StatsView: View {
                             .padding()
                         
                         
-                        Text("Days: \(bestHabit.days)")
+                        // fix
+                        Text("Days: \(bestHabit.days[0])")
                             .padding()
-                    }
+                        }
                     }
                 .frame(maxWidth: .infinity)
                 .background(.ultraThinMaterial)

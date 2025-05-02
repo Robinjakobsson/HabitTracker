@@ -58,13 +58,10 @@ class Habit {
     
     
     func isCompletedToday() -> Bool {
-        //First checking if CompleteDate exists, if it does not we stop
         guard let completeDate = completeDate else { return false }
-        
-        // getting the Calendar for the isDateinToday Function
+
         let calendar = Calendar.current
         
-        // Returning the Answer
         return calendar.isDateInToday(completeDate)
         
         }

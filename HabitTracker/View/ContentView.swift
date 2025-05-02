@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 //Veckodagar längst upp och en lista för dagens grejer.
+//TODOD LÄGG TILL NÄR habit blev klar
 
 
 struct ContentView: View {
@@ -41,6 +42,7 @@ struct ContentView: View {
                                 }
                             }.padding(.horizontal)
                         }
+                        Divider()
                         
                         List {
                             ForEach(habitsForSelectedDay) { habit in

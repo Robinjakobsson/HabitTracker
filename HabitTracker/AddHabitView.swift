@@ -36,11 +36,12 @@ struct AddHabitView: View {
                             }
                         }
                         .padding(8)
-                        .background(selectedDays.contains(day) ? Color.green : Color.gray.opacity(0.2))
-                        .foregroundColor(selectedDays.contains(day) ? Color.white : Color.blue)
+                        .background(selectedDays.contains(day) ? Color.green : Color.clear)
+                        .foregroundColor(selectedDays.contains(day) ? Color.white : Color.black)
                         .cornerRadius(8)
                     }
                 }
+                Divider()
                 .padding()
                 
                 
@@ -56,11 +57,11 @@ struct AddHabitView: View {
                     Text("Save")
                 }
                 .frame(maxWidth: .infinity, maxHeight: 50)
-                .background(!habitName.isEmpty ?  Color.green : Color(.systemGray6))
+                .background(!habitName.isEmpty ?  Color.green : Color(.clear))
                 .cornerRadius(10)
                 .padding()
-                .foregroundColor(!habitName.isEmpty ? Color.white : Color.blue)
-                .animation(.smooth(duration: 0.3), value: habitName)
+                .foregroundColor(!habitName.isEmpty ? Color.white : Color.clear)
+                .animation(.smooth(duration: 0.7), value: habitName)
                 Spacer()
             }
         }
@@ -78,6 +79,7 @@ struct AddHabitView: View {
             }
             habitName = ""
             selectedDays.removeAll()
+            dismiss()
         }
     }
 }
