@@ -68,6 +68,10 @@ struct AddHabitView: View {
     }
      func addItem() {
         withAnimation {
+            guard !habitName.isEmpty else {
+                print("Nothing to add")
+                return
+            }
             let newHabit = Habit(title: habitName, days: Array(selectedDays))
             modelContext.insert(newHabit)
             print("\(newHabit.title) added")
