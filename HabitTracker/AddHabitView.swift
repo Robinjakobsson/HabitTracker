@@ -14,53 +14,59 @@ struct AddHabitView: View {
     @State var habitName : String = ""
     @State private var selectedDays: Set<Weekday> = []
     var body: some View {
-        
-        
-        VStack {
+        ZStack {
+            LinearGradient(colors: [.green, .white], startPoint: .topTrailing, endPoint: .bottom)
+                .ignoresSafeArea()
             
-            Text("Repeat on:")
-                .font(.title)
-            
-            HStack {
-                ForEach(Weekday.allCases) { day in
-                    Button(day.displayName) {
-                        withAnimation {
-                            if selectedDays.contains(day) {
-                                selectedDays.remove(day)
-                                print("\(day) Removed")
-                            } else {
-                                selectedDays.insert(day)
-                                print("\(day) Selected")
-                                
+            VStack {
+                Text("Repeat on:")
+                    .font(.title)
+                HStack {
+                    ForEach(Weekday.allCases) { day in
+                        Button(day.displayName) {
+                            withAnimation {
+                                if selectedDays.contains(day) {
+                                    selectedDays.remove(day)
+                                    print("\(day) Removed")
+                                } else {
+                                    selectedDays.insert(day)
+                                    print("\(day) Selected")
+                                    
+                                }
                             }
                         }
+                        .padding(8)
+                        .background(selectedDays.contains(day) ? Color.green : Color.clear)
+                        .foregroundColor(selectedDays.contains(day) ? Color.white : Color.black)
+                        .cornerRadius(8)
                     }
-                    .padding(8)
-                    .background(selectedDays.contains(day) ? Color.green : Color.gray.opacity(0.2))
-                    .foregroundColor(selectedDays.contains(day) ? Color.white : Color.blue)
-                    .cornerRadius(8)
                 }
-            }
-            .padding()
-            
-            
-            TextField("Habit name", text: $habitName)
-                .textFieldStyle(.roundedBorder)
+                Divider()
                 .padding()
-            
-            Button(action: {
-                withAnimation{
-                    addItem()
+                
+                
+                TextField("Habit name", text: $habitName)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                
+                Button(action: {
+                    withAnimation{
+                        addItem()
+                    }
+                }) {
+                    Text("Save")
                 }
-            }) {
-                Text("Save")
-            }
                 .frame(maxWidth: .infinity, maxHeight: 50)
-                .background(!habitName.isEmpty ?  Color.green : Color(.systemGray6))
+                .background(!habitName.isEmpty ?  Color.green : Color(.clear))
                 .cornerRadius(10)
                 .padding()
-                .foregroundColor(!habitName.isEmpty ? Color.white : Color.blue)
-                .animation(.smooth(duration: 0.3), value: habitName)
+                .foregroundColor(!habitName.isEmpty ? Color.white : Color.clear)
+                .animation(.smooth(duration: 0.7), value: habitName)
+                Spacer()
+            }
+        }
+    }
+
             }
         Spacer()
     }
@@ -77,6 +83,8 @@ struct AddHabitView: View {
             }
             habitName = ""
             selectedDays.removeAll()
+            dismiss()
+
         }
     }
 }
