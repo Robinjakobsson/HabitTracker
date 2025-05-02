@@ -23,6 +23,35 @@ struct StatsView: View {
                     StatsCard(title: "Total Habits", value: "\(amountOfHabits)", icon: "checkmark.circle.fill")
                     
             }
+                VStack {
+                    Text("Longest lasting Habit")
+                        .font(.headline)
+                        .padding()
+            
+                    if let bestHabit = bestHabit {
+                        Text("\(bestHabit.title)")
+                            .font(.system(size: 40))
+                            .bold()
+                            .padding()
+                        
+                        Text("\(bestHabit.streak)")
+                            .bold()
+                            .padding()
+                        
+                        
+                        Text("Days: \(bestHabit.days)")
+                            .padding()
+                    }
+                    }
+                .frame(maxWidth: .infinity)
+                .background(.ultraThinMaterial)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .padding()
+                        
+        
+                
+                
             Spacer()
         }
     }
@@ -39,6 +68,11 @@ struct StatsView: View {
         
         return habits.count
     }
+    
+    var bestHabit: Habit? {
+        habits.max(by: {$0.streak < $1.streak})
+    }
+    
 }
 
 #Preview {

@@ -33,7 +33,7 @@ struct StatsCard: View {
             
         }
         .frame(width: 100)
-        .background(.white)
+        .background(.thinMaterial)
         .cornerRadius(10)
         .shadow(radius: 5)
         

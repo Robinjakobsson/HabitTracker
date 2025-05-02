@@ -74,6 +74,16 @@ struct ContentView: View {
                                 .foregroundColor(selectedTab == 0 ? .white : .green)
                         }
                         
+                        Button(action : {
+                            withAnimation { showingAddSheet = true }
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 30))
+                                .padding()
+                                .background(Circle().foregroundColor(selectedTab == 2 ? .green : .clear))
+                                .foregroundColor(selectedTab == 2 ? .white : .green)
+                        }
+                        
                         Button(action: {
                             withAnimation { selectedTab = 1 }
                         }) {
@@ -89,15 +99,6 @@ struct ContentView: View {
                     .clipShape(Capsule())
                     .padding(.horizontal)
                     .shadow(radius: 10)
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        showingAddSheet = true
-                    }) {
-                        Image(systemName: "plus")
-                    }
                 }
             }
             .sheet(isPresented: $showingAddSheet) {
