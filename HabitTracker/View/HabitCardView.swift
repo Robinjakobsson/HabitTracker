@@ -91,8 +91,10 @@ struct HabitCardView: View {
     }
     
 }
+
 #Preview() {
     HabitCardView(habit: Habit(title: "Hllo", days: [.friday]))
 }
+
 
 

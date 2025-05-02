@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 //Veckodagar längst upp och en lista för dagens grejer.
-//TODOD LÄGG TILL NÄR habit blev klar
 
 
 struct ContentView: View {
@@ -95,6 +94,7 @@ struct ContentView: View {
                                 .background(Circle().foregroundColor(selectedTab == 1 ? .green : .clear))
                                 .foregroundColor(selectedTab == 1 ? .white : .green)
                         }
+
                     }
                     .padding()
                     .background(.ultraThinMaterial)
