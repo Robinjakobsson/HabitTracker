@@ -20,7 +20,7 @@ struct HabitCardView: View {
                     Text(habit.title)
                         .font(.title3)
                         .bold()
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.primary)
                     Spacer()
                     Button(action: toggleComplete) {
                         Image(systemName: habit.isComplete ? "checkmark.circle.fill" : "circle")

@@ -6,34 +6,44 @@
 //
 
 import SwiftUI
-
-//TODO Friday
-
-// Gör klart Statsview så man ser högsta streaken som man gjort
-// Gör om TabView så den syns i botten här med
-// Lägg till bakgrund
+import SwiftData
 
 struct StatsView: View {
+    @Query(sort: \Habit.createdDate, order: .forward) var habits: [Habit]
+    
+    
     var body: some View {
-        GridLayout {
-            GridRow {
-                Text("Hello")
-                Image(systemName: "circle.fill")
-            }
-            .frame(width: 100, height: 100)
-            .padding()
-            .background(Color(.systemGray6))
+        ZStack {
+            LinearGradient(colors: [.green, .white], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
             
-            GridRow {
-                Text("Hello")
+            VStack(spacing: 20) {
+                HStack(spacing: 50) {
+                    StatsCard(title: "Highest streak", value: "\(highestStreak)", icon: "flame.fill")
+                    StatsCard(title: "Total Habits", value: "\(amountOfHabits)", icon: "checkmark.circle.fill")
+                    
             }
-            .frame(width: 100, height: 100)
-            .padding()
-            .background(Color(.systemGray6))
+            Spacer()
         }
+    }
+        
+}
+    var highestStreak: Int {
+        guard !habits.isEmpty else { return 0 }
+        
+        return habits.map(\.streak).max() ?? 0
+    }
+    
+    var amountOfHabits : Int {
+        guard !habits.isEmpty else {return 0 }
+        
+        return habits.count
     }
 }
 
 #Preview {
     StatsView()
+        .modelContainer(for: Habit.self, inMemory: true)
 }
+
+
