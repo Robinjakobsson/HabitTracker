@@ -93,7 +93,7 @@ struct HabitCardView: View {
 }
 
 #Preview() {
-    HabitCardView(habit: Habit(title: "Hllo", days: [.friday]))
+    HabitCardView(habit: Habit(title: "Hllo", days: [.friday], finishTime: Date()))
 }
 
 

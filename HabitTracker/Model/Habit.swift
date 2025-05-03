@@ -18,9 +18,10 @@ class Habit {
     var streak: Int = 0
     var lastReset: Date?
     var days: [Weekday] = []
+    var finishTime : Date?
 
   
-    init(title: String, createdDate: Date = Date(), streak: Int = 0, completeDate: Date? = nil, isComplete: Bool = false, lastReset : Date = Date(), days: [Weekday]) {
+    init(title: String, createdDate: Date = Date(), streak: Int = 0, completeDate: Date? = nil, isComplete: Bool = false, lastReset : Date = Date(), days: [Weekday], finishTime : Date) {
         self.id = UUID()
         self.title = title
         self.createdDate = createdDate
@@ -29,6 +30,7 @@ class Habit {
         self.isComplete = isComplete
         self.lastReset = lastReset
         self.days = days
+        self.finishTime = finishTime
     }
     
     
@@ -41,7 +43,7 @@ class Habit {
         let toDayDay = Weekday.allCases[(weekdayIndex + 5) % 7] // Hämtar dagens dag
         
         guard habit.days.contains(toDayDay) else { // Kollar om vanans dagar innehåller dagens veckodag
-            print("Wait until tomorrow! \(toDayDay) \(today)")
+            print("Today \(toDayDay) \(today)")
             return
         }
         

@@ -38,8 +38,7 @@ struct StatsView: View {
                             .bold()
                             .padding()
                         
-                        
-                        // fix
+            
                         Text("Days: \(bestHabit.days[0])")
                             .padding()
                         }
