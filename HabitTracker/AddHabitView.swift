@@ -42,7 +42,7 @@ struct AddHabitView: View {
                     }
                 }
                 Divider()
-                .padding()
+                    .padding()
                 
                 
                 TextField("Habit name", text: $habitName)
@@ -66,28 +66,27 @@ struct AddHabitView: View {
             }
         }
     }
-
-            }
-        Spacer()
-    }
-     func addItem() {
-        withAnimation {
-            let newHabit = Habit(title: habitName, days: Array(selectedDays))
-            modelContext.insert(newHabit)
-            print("\(newHabit.title) added")
             
-            do {
-               try modelContext.save()
-            } catch {
-                print("Unable to save new habit")
+            func addItem() {
+                withAnimation {
+                    let newHabit = Habit(title: habitName, days: Array(selectedDays))
+                    modelContext.insert(newHabit)
+                    print("\(newHabit.title) added")
+                    
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("Unable to save new habit")
+                    }
+                    habitName = ""
+                    selectedDays.removeAll()
+                    dismiss()
+                    
+                }
             }
-            habitName = ""
-            selectedDays.removeAll()
-            dismiss()
-
         }
-    }
-}
+    
+
 
 
 #Preview {
