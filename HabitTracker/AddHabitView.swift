@@ -76,7 +76,7 @@ struct AddHabitView: View {
             
             func addItem() {
                 withAnimation {
-                    let newHabit = Habit(title: habitName, days: Array(selectedDays),finishTime: Date())
+                    let newHabit = Habit(title: habitName, days: Array(selectedDays),finishTime: lastFinish)
                     modelContext.insert(newHabit)
                     print("\(newHabit.title) added")
                     

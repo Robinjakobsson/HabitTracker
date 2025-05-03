@@ -49,6 +49,13 @@ struct HabitCardView: View {
                     Text("Streak : \(streak) 🔥")
                         .font(.subheadline)
                         .foregroundColor(habit?.streak ?? 0 < 0 ? .black : .green)
+                    Spacer()
+                    
+                    if let dueTime = habit?.finishTime {
+                        Text("Due : \(formatted)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                     
                 }
             }
@@ -88,6 +95,18 @@ struct HabitCardView: View {
         } catch {
             print(error)
         }
+    }
+    
+    private var formatted : String {
+        guard let habit = habit else {return ""}
+       
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        
+        formatter.locale = Locale(identifier: "sv_SE")
+        
+        
+        return formatter.string(from: habit.finishTime ?? Date())
     }
     
 }
