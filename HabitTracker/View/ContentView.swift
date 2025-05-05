@@ -28,19 +28,20 @@ struct ContentView: View {
                         .ignoresSafeArea()
                     
                     VStack {
-                        ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
                                 ForEach(Weekday.allCases) { day in
-                                    Text(day.displayName)
-                                        .padding()
-                                        .background(selectedDay == day ? Color.green : Color.gray.opacity(0.2))
-                                        .cornerRadius(10)
-                                        .onTapGesture {
+                                    Button(day.displayName) {
+                                        withAnimation {
                                             selectedDay = day
                                         }
+                                    }
+                                    .padding(8)
+                                    .background(selectedDay == day ? Color.green : Color.clear)
+                                    .foregroundColor(selectedDay == day ? Color.white : .black)
                                 }
+                                
                             }.padding(.horizontal)
-                        }
+                        
                         Divider()
                         
                         List {
@@ -55,6 +56,7 @@ struct ContentView: View {
                         Spacer()
                     }
                     .navigationTitle("Habits")
+                    
                 } else if selectedTab == 1 {
 //MARK: - STATSVIEW // Tab 1
                     StatsView()
@@ -65,36 +67,17 @@ struct ContentView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        Button(action: {
-                            withAnimation { selectedTab = 0 }
-                        }) {
-                            Image(systemName: "house")
-                                .font(.system(size: 20))
-                                .padding()
-                                .background(Circle().foregroundColor(selectedTab == 0 ? .green : .clear))
-                                .foregroundColor(selectedTab == 0 ? .white : .green)
-                        }
+                        AnimatingButton(forColor: .green, action: {selectedTab = 0}, selectedTab: 1, icon: "house")
+                            .background(Circle().foregroundColor(selectedTab == 0 ? .green : .clear))
+                            .foregroundColor(selectedTab == 0 ? .white : .green)
                         
-                        Button(action : {
-                            withAnimation { showingAddSheet = true }
-                        }) {
-                            Image(systemName: "plus")
-                                .font(.system(size: 30))
-                                .padding()
-                                .background(Circle().foregroundColor(selectedTab == 2 ? .green : .clear))
-                                .foregroundColor(selectedTab == 2 ? .white : .green)
-                        }
+                        AnimatingButton(forColor: .green, action: {showingAddSheet = true}, selectedTab: 2, icon: "plus")
+                            .background(Circle().foregroundColor(selectedTab == 2 ? .green : .clear))
+                            .foregroundColor(selectedTab == 2 ? .white : .green)
                         
-                        Button(action: {
-                            withAnimation { selectedTab = 1 }
-                        }) {
-                            Image(systemName: "chart.bar")
-                                .font(.system(size: 20))
-                                .padding()
-                                .background(Circle().foregroundColor(selectedTab == 1 ? .green : .clear))
-                                .foregroundColor(selectedTab == 1 ? .white : .green)
-                        }
-
+                        AnimatingButton(forColor: .green, action: {selectedTab = 1}, selectedTab: 1, icon: "chart.bar")
+                            .background(Circle().foregroundColor(selectedTab == 1 ? .green : .clear))
+                            .foregroundColor(selectedTab == 1 ? .white : .green)
                     }
                     .padding()
                     .background(.ultraThinMaterial)
