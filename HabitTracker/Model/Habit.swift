@@ -34,6 +34,7 @@ class Habit {
     }
     
     
+//MARK: - CompleteFunction
     
     func markAsComplete(habit : Habit) {
         let today = Date()
@@ -58,7 +59,7 @@ class Habit {
         isComplete = true
        }
     
-    
+//MARK: - Function to check if a habit is done today.
     func isCompletedToday() -> Bool {
         guard let completeDate = completeDate else { return false }
 
@@ -69,6 +70,8 @@ class Habit {
         }
     
 }
+
+//MARK: - Enum Weekdays
 
 enum Weekday: String, CaseIterable, Codable, Identifiable {
     var id : String {self.rawValue}

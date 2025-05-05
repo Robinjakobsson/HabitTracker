@@ -24,6 +24,8 @@ struct AddHabitView: View {
                     .font(.title)
 //MARK: - Weekdays
                 HStack {
+                    // För varje veckodag så gör vi en knapp och lägger in i ett set av Weekday
+                    // Kan ej vara dubbleter i Set
                     ForEach(Weekday.allCases) { day in
                         Button(day.displayName) {
                             withAnimation {
@@ -52,10 +54,11 @@ struct AddHabitView: View {
                     .padding()
                 
 //MARK: - Datepicker
+                //Date picker som bara visar timme och minut
                 DatePicker("Due time", selection: $lastFinish, displayedComponents: .hourAndMinute)
                     .labelsHidden()
                     
-                
+                //Knapp som visas när Textfield inte är tomt
                 Button(action: {
                     withAnimation{
                         addItem()
@@ -73,14 +76,19 @@ struct AddHabitView: View {
             }
         }
     }
-            
+//MARK: - AddItem function
             func addItem() {
                 withAnimation {
                     let newHabit = Habit(title: habitName, days: Array(selectedDays),finishTime: lastFinish)
                     modelContext.insert(newHabit)
                     print("\(newHabit.title) added")
                     
+//MARK: - Notification Manager
+                    // Här lägger jag till en notis för Habiten,
+                    NotificationManager.shared.scheduleNotification(title: "Habit reminder", body: "\(habitName) is due Soon!", date: lastFinish, identifier: newHabit.id.uuidString)
+                    
                     do {
+                        // Använder denna för att säkerställa att det verkligen sparas.
                         try modelContext.save()
                     } catch {
                         print("Unable to save new habit")

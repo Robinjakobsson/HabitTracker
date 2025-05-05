@@ -10,6 +10,11 @@ import SwiftData
 
 @main
 struct HabitTrackerApp: App {
+    
+    init() {
+        NotificationManager.shared.requestPermission()
+    }
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([Habit.self,])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
