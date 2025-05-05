@@ -13,6 +13,7 @@ struct AddHabitView: View {
     
     @State var habitName : String = ""
     @State private var selectedDays: Set<Weekday> = []
+    @State private var lastFinish: Date = Date()
     var body: some View {
         ZStack {
             LinearGradient(colors: [.green, .white], startPoint: .topTrailing, endPoint: .bottom)
@@ -21,6 +22,7 @@ struct AddHabitView: View {
             VStack {
                 Text("Repeat on:")
                     .font(.title)
+//MARK: - Weekdays
                 HStack {
                     ForEach(Weekday.allCases) { day in
                         Button(day.displayName) {
@@ -44,10 +46,15 @@ struct AddHabitView: View {
                 Divider()
                     .padding()
                 
-                
+//MARK: - Textfield
                 TextField("Habit name", text: $habitName)
                     .textFieldStyle(.roundedBorder)
                     .padding()
+                
+//MARK: - Datepicker
+                DatePicker("Due time", selection: $lastFinish, displayedComponents: .hourAndMinute)
+                    .labelsHidden()
+                    
                 
                 Button(action: {
                     withAnimation{
@@ -69,7 +76,7 @@ struct AddHabitView: View {
             
             func addItem() {
                 withAnimation {
-                    let newHabit = Habit(title: habitName, days: Array(selectedDays))
+                    let newHabit = Habit(title: habitName, days: Array(selectedDays),finishTime: lastFinish)
                     modelContext.insert(newHabit)
                     print("\(newHabit.title) added")
                     
