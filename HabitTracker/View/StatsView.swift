@@ -13,6 +13,7 @@ struct StatsView: View {
     
     
     var body: some View {
+        //Bakgrund
         ZStack {
             LinearGradient(colors: [.green, .white], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()

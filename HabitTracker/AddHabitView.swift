@@ -15,6 +15,8 @@ struct AddHabitView: View {
     @State private var selectedDays: Set<Weekday> = []
     @State private var lastFinish: Date = Date()
     var body: some View {
+        
+        //Bakgrund
         ZStack {
             LinearGradient(colors: [.green, .white], startPoint: .topTrailing, endPoint: .bottom)
                 .ignoresSafeArea()
@@ -61,7 +63,7 @@ struct AddHabitView: View {
                 //Knapp som visas när Textfield inte är tomt
                 Button(action: {
                     withAnimation{
-                        addItem()
+                        add()
                     }
                 }) {
                     Text("Save")
@@ -99,7 +101,28 @@ struct AddHabitView: View {
                     
                 }
             }
+    //Gör flera habits av vald dag
+    func add() {
+        withAnimation {
+            for day in selectedDays {
+                let newHabit = Habit(title: habitName, days: [day], finishTime: lastFinish)
+                
+                modelContext.insert(newHabit)
+                
+                NotificationManager.shared.scheduleNotification(title: "Habit Reminder", body: "\(habitName) is due soon!", date: lastFinish, identifier: newHabit.id.uuidString)
+                
+                do {
+                    try modelContext.save()
+                } catch {
+                    print("Unable to save new habit!")
+                }
+            }
+            habitName = ""
+            selectedDays.removeAll()
+            dismiss()
         }
+    }
+}
     
 
 
