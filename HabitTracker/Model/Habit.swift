@@ -39,11 +39,11 @@ class Habit {
     func markAsComplete(habit : Habit) {
         let today = Date()
            
-        let weekdayIndex = Calendar.current.component(.weekday, from: Date()) // Hämtar index för veckans dag
+        let weekdayIndex = Calendar.current.component(.weekday, from: Date())
         
-        let toDayDay = Weekday.allCases[(weekdayIndex + 5) % 7] // Hämtar dagens dag
+        let toDayDay = Weekday.allCases[(weekdayIndex + 5) % 7]
         
-        guard habit.days.contains(toDayDay) else { // Kollar om vanans dagar innehåller dagens veckodag
+        guard habit.days.contains(toDayDay) else {
             print("Today \(toDayDay) \(today)")
             return
         }
