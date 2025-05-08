@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct HabitTrackerApp: App {
     
+    // Fråga om lov från användaren.
     init() {
         NotificationManager.shared.requestPermission()
     }
