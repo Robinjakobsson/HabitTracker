@@ -29,7 +29,7 @@ NavigationView {
                     
             VStack {
                 HStack {
-                    // Alla
+                    // Alla Veckodagar, gör en knapp av alla dagar i en HSTACK
                 ForEach(Weekday.allCases) { day in
                     Button(day.displayName) {
                     withAnimation {
@@ -46,6 +46,7 @@ NavigationView {
             Divider()
                         
                 List {
+                    // Lista med Habits som vi visar upp med en habitCardView
                     ForEach(habitsForSelectedDay) { habit in
                         HabitCardView(habit: habit)
                             .listRowBackground(Color.clear)
@@ -90,6 +91,7 @@ NavigationView {
                 }
             }
             .onAppear {
+                // varenda gång man startar appen så kör vi Funktionen för att reseta
                 resetDaily(habits: habits)
             }
             .sheet(isPresented: $showingAddSheet) {
@@ -136,7 +138,7 @@ NavigationView {
             }
         }
     }
-    
+    // Funktion för att reseta alla habits direkt, kör i .onAppear
     func resetAllHabits(habits: [Habit]) {
         let now = Date()
 
